@@ -66,7 +66,9 @@ export default async function AdminDashboardPage() {
               </span>
             </div>
             <p style={{ margin: 0, fontSize: "0.82rem", opacity: 0.75 }}>
-              Persistent storage at <code>data/hadid.sqlite</code> with dual-write JSON synchronization. All website content is 100% editable.
+              {dbStatus.isServerless
+                ? "Connected to Vercel Postgres / Neon cloud database. All changes persist across deployments."
+                : "Local storage at data/hadid.sqlite with JSON sync. Automatically connects to Vercel Postgres in production."}
             </p>
           </div>
         </div>

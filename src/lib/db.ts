@@ -1,6 +1,7 @@
 import { readFile, writeFile, mkdir } from "fs/promises";
-import { existsSync, readdirSync } from "fs";
+import { existsSync, readdirSync, readFileSync } from "fs";
 import { join } from "path";
+import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
 
 const DATA_DIR = join(process.cwd(), "data");
 const DB_FILE = join(DATA_DIR, "hadid.sqlite");
@@ -16,9 +17,36 @@ interface SqliteDatabase {
   prepare(sql: string): SqliteStatement;
 }
 
-/* Global database handle */
+/* Global handles */
 let sqliteDb: SqliteDatabase | null = null;
-let initialized = false;
+let sqliteInitialized = false;
+
+let pgClient: NeonQueryFunction<false, false> | null = null;
+let pgInitialized = false;
+
+function getPostgresUrl(): string | null {
+  return (
+    process.env.POSTGRES_URL ||
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_PRISMA_URL ||
+    process.env.POSTGRES_URL_NON_POOLING ||
+    null
+  );
+}
+
+function getPgClient(): NeonQueryFunction<false, false> | null {
+  const url = getPostgresUrl();
+  if (!url) return null;
+  if (!pgClient) {
+    try {
+      pgClient = neon(url);
+    } catch (err) {
+      console.error("Failed to initialize Neon Postgres client:", err);
+      return null;
+    }
+  }
+  return pgClient;
+}
 
 async function ensureDir() {
   try {
@@ -33,14 +61,124 @@ function filePath(name: string): string {
 }
 
 /**
- * Initializes the SQLite database engine using Node.js native DatabaseSync.
- * If SQLite fails or is unavailable in an edge context, it gracefully falls back to JSON.
+ * Initializes and auto-seeds Postgres on Vercel or serverless environments.
+ */
+async function ensurePgTables(sql: NeonQueryFunction<false, false>): Promise<void> {
+  if (pgInitialized) return;
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS content_overrides (
+        key TEXT PRIMARY KEY,
+        value TEXT,
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS collections (
+        collection TEXT,
+        id TEXT,
+        data TEXT,
+        updated_at TIMESTAMPTZ DEFAULT NOW(),
+        PRIMARY KEY (collection, id)
+      );
+    `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS settings (
+        key TEXT PRIMARY KEY,
+        value TEXT,
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+    `;
+
+    // Check if empty, then auto-seed from local data files
+    const existing = (await sql`SELECT COUNT(*)::int as count FROM collections`) as { count: number }[];
+    const count = Number(existing[0]?.count || 0);
+    if (count === 0) {
+      console.log("Seeding Neon/Vercel Postgres from local data files...");
+      await seedPgFromJson(sql);
+    }
+    pgInitialized = true;
+  } catch (err) {
+    console.error("Error creating/migrating Postgres schema:", err);
+  }
+}
+
+/**
+ * Seeds Postgres from local JSON data files
+ */
+export async function seedPgFromJson(sql?: NeonQueryFunction<false, false>): Promise<number> {
+  const client = sql || getPgClient();
+  if (!client) return 0;
+  let totalSeeded = 0;
+
+  try {
+    if (!existsSync(DATA_DIR)) return 0;
+    const files = readdirSync(DATA_DIR);
+    const now = new Date().toISOString();
+
+    for (const file of files) {
+      if (!file.endsWith(".json")) continue;
+      const collection = file.replace(".json", "");
+      const fullPath = join(DATA_DIR, file);
+
+      try {
+        const raw = readFileSync(fullPath, "utf-8");
+        const parsed = JSON.parse(raw);
+
+        if (collection === "content-overrides" && typeof parsed === "object" && !Array.isArray(parsed)) {
+          for (const [k, v] of Object.entries(parsed)) {
+            await client`
+              INSERT INTO content_overrides (key, value, updated_at)
+              VALUES (${k}, ${String(v)}, ${now})
+              ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at
+            `;
+            totalSeeded++;
+          }
+        } else if (collection === "settings" && typeof parsed === "object" && !Array.isArray(parsed)) {
+          for (const [k, v] of Object.entries(parsed)) {
+            const val = typeof v === "string" ? v : JSON.stringify(v);
+            await client`
+              INSERT INTO settings (key, value, updated_at)
+              VALUES (${k}, ${val}, ${now})
+              ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at
+            `;
+            totalSeeded++;
+          }
+        } else if (Array.isArray(parsed)) {
+          for (const item of parsed) {
+            const id = (item as { id?: string }).id || generateId();
+            await client`
+              INSERT INTO collections (collection, id, data, updated_at)
+              VALUES (${collection}, ${String(id)}, ${JSON.stringify(item)}, ${now})
+              ON CONFLICT (collection, id) DO UPDATE SET data = EXCLUDED.data, updated_at = EXCLUDED.updated_at
+            `;
+            totalSeeded++;
+          }
+        }
+      } catch (fileErr) {
+        console.warn(`Could not seed ${file}:`, fileErr);
+      }
+    }
+  } catch (err) {
+    console.warn("Could not complete Postgres seeding:", err);
+  }
+  return totalSeeded;
+}
+
+/**
+ * Initializes the SQLite database engine using Node.js native DatabaseSync for local development.
  */
 function getDb(): SqliteDatabase | null {
   if (sqliteDb) return sqliteDb;
+  // In Vercel or when Postgres is configured, bypass local SQLite
+  if (getPostgresUrl() || process.env.VERCEL) return null;
+
   try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { DatabaseSync } = require("node:sqlite");
+    // Dynamic require so bundlers (Webpack / Turbopack / Vercel) don't trace node:sqlite at build time
+    // eslint-disable-next-line @typescript-eslint/no-implied-eval
+    const dynamicRequire = eval("require");
+    const { DatabaseSync } = dynamicRequire("node:sqlite");
+    if (!DatabaseSync) return null;
     sqliteDb = new DatabaseSync(DB_FILE) as SqliteDatabase;
 
     // Initialize core schema
@@ -65,8 +203,8 @@ function getDb(): SqliteDatabase | null {
     `);
 
     // One-time migration from existing JSON files if SQLite tables are empty
-    if (!initialized) {
-      initialized = true;
+    if (!sqliteInitialized) {
+      sqliteInitialized = true;
       migrateJsonToSqlite(sqliteDb);
     }
 
@@ -91,8 +229,7 @@ function migrateJsonToSqlite(db: SqliteDatabase) {
       const fullPath = join(DATA_DIR, file);
 
       try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const raw = require("fs").readFileSync(fullPath, "utf-8");
+        const raw = readFileSync(fullPath, "utf-8");
         const parsed = JSON.parse(raw);
 
         if (collection === "content-overrides" && typeof parsed === "object" && !Array.isArray(parsed)) {
@@ -126,9 +263,45 @@ function migrateJsonToSqlite(db: SqliteDatabase) {
 }
 
 export async function readData<T>(name: string, fallback: T): Promise<T> {
+  // 1. Check Serverless Postgres (Vercel / Neon / Supabase)
+  const sql = getPgClient();
+  if (sql) {
+    try {
+      await ensurePgTables(sql);
+      if (name === "content-overrides") {
+        const rows = (await sql`SELECT key, value FROM content_overrides`) as { key: string; value: string }[];
+        if (rows && rows.length > 0) {
+          const obj: Record<string, string> = {};
+          for (const r of rows) obj[r.key] = r.value;
+          return obj as unknown as T;
+        }
+      } else if (name === "settings") {
+        const rows = (await sql`SELECT key, value FROM settings`) as { key: string; value: string }[];
+        if (rows && rows.length > 0) {
+          const obj: Record<string, unknown> = {};
+          for (const r of rows) {
+            try {
+              obj[r.key] = JSON.parse(r.value);
+            } catch {
+              obj[r.key] = r.value;
+            }
+          }
+          return obj as unknown as T;
+        }
+      } else {
+        const rows = (await sql`SELECT data FROM collections WHERE collection = ${name} ORDER BY updated_at ASC`) as { data: string }[];
+        if (rows && rows.length > 0) {
+          return rows.map((r) => JSON.parse(r.data)) as unknown as T;
+        }
+      }
+    } catch (pgErr) {
+      console.warn(`Postgres read fallback for ${name}:`, pgErr);
+    }
+  }
+
+  // 2. Check local SQLite (for local development)
   await ensureDir();
   const db = getDb();
-
   if (db) {
     try {
       if (name === "content-overrides") {
@@ -162,7 +335,7 @@ export async function readData<T>(name: string, fallback: T): Promise<T> {
     }
   }
 
-  // Fallback to JSON file
+  // 3. Fallback to JSON file
   try {
     const raw = await readFile(filePath(name), "utf-8");
     return JSON.parse(raw) as T;
@@ -172,10 +345,51 @@ export async function readData<T>(name: string, fallback: T): Promise<T> {
 }
 
 export async function writeData<T>(name: string, data: T): Promise<void> {
-  await ensureDir();
-  const db = getDb();
   const now = new Date().toISOString();
 
+  // 1. Write to Postgres if connected (Vercel production / Neon)
+  const sql = getPgClient();
+  if (sql) {
+    try {
+      await ensurePgTables(sql);
+      if (name === "content-overrides" && typeof data === "object" && !Array.isArray(data) && data !== null) {
+        await sql`DELETE FROM content_overrides`;
+        for (const [k, v] of Object.entries(data as Record<string, unknown>)) {
+          await sql`
+            INSERT INTO content_overrides (key, value, updated_at)
+            VALUES (${k}, ${String(v)}, ${now})
+            ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at
+          `;
+        }
+      } else if (name === "settings" && typeof data === "object" && !Array.isArray(data) && data !== null) {
+        await sql`DELETE FROM settings`;
+        for (const [k, v] of Object.entries(data as Record<string, unknown>)) {
+          const val = typeof v === "string" ? v : JSON.stringify(v);
+          await sql`
+            INSERT INTO settings (key, value, updated_at)
+            VALUES (${k}, ${val}, ${now})
+            ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at
+          `;
+        }
+      } else if (Array.isArray(data)) {
+        await sql`DELETE FROM collections WHERE collection = ${name}`;
+        for (const item of data) {
+          const id = (item as { id?: string }).id || generateId();
+          await sql`
+            INSERT INTO collections (collection, id, data, updated_at)
+            VALUES (${name}, ${String(id)}, ${JSON.stringify(item)}, ${now})
+            ON CONFLICT (collection, id) DO UPDATE SET data = EXCLUDED.data, updated_at = EXCLUDED.updated_at
+          `;
+        }
+      }
+    } catch (e) {
+      console.warn("Postgres write error, falling back to SQLite/JSON:", e);
+    }
+  }
+
+  // 2. Write to local SQLite if available
+  await ensureDir();
+  const db = getDb();
   if (db) {
     try {
       if (name === "content-overrides" && typeof data === "object" && !Array.isArray(data) && data !== null) {
@@ -203,11 +417,13 @@ export async function writeData<T>(name: string, data: T): Promise<void> {
     }
   }
 
-  // Dual-write to JSON file to keep file backups synchronized
+  // 3. Dual-write to JSON file to keep file backups synchronized
   try {
     await writeFile(filePath(name), JSON.stringify(data, null, 2), "utf-8");
   } catch (err) {
-    console.error("Failed writing JSON backup:", err);
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Failed writing JSON backup:", err);
+    }
   }
 }
 
@@ -265,12 +481,49 @@ export function generateId(): string {
 export async function getDatabaseStatus(): Promise<{
   connected: boolean;
   engine: string;
+  isServerless: boolean;
+  hasPostgresConfigured: boolean;
   tables: { name: string; count: number }[];
 }> {
+  const hasPg = !!getPostgresUrl();
+  const sql = getPgClient();
+
+  if (sql) {
+    try {
+      await ensurePgTables(sql);
+      const overridesCountRes = (await sql`SELECT COUNT(*)::int as count FROM content_overrides`) as { count: number }[];
+      const settingsCountRes = (await sql`SELECT COUNT(*)::int as count FROM settings`) as { count: number }[];
+      const collectionsRows = (await sql`SELECT collection, COUNT(*)::int as count FROM collections GROUP BY collection`) as { collection: string; count: number }[];
+
+      const tables = [
+        { name: "content_overrides", count: Number(overridesCountRes[0]?.count || 0) },
+        { name: "settings", count: Number(settingsCountRes[0]?.count || 0) },
+        ...collectionsRows.map((r) => ({ name: `collection: ${r.collection}`, count: Number(r.count) })),
+      ];
+
+      return {
+        connected: true,
+        engine: "Vercel Postgres / Neon (Serverless)",
+        isServerless: true,
+        hasPostgresConfigured: true,
+        tables,
+      };
+    } catch (err) {
+      console.error("Error checking Postgres database status:", err);
+    }
+  }
+
   const db = getDb();
   if (!db) {
-    return { connected: false, engine: "JSON Fallback", tables: [] };
+    return {
+      connected: false,
+      engine: "JSON Fallback",
+      isServerless: false,
+      hasPostgresConfigured: hasPg,
+      tables: [],
+    };
   }
+
   try {
     const overridesCount = (db.prepare("SELECT COUNT(*) as count FROM content_overrides").get() as { count: number }).count;
     const settingsCount = (db.prepare("SELECT COUNT(*) as count FROM settings").get() as { count: number }).count;
@@ -285,9 +538,17 @@ export async function getDatabaseStatus(): Promise<{
     return {
       connected: true,
       engine: "SQLite 3 (node:sqlite)",
+      isServerless: false,
+      hasPostgresConfigured: hasPg,
       tables,
     };
   } catch {
-    return { connected: false, engine: "Error", tables: [] };
+    return {
+      connected: false,
+      engine: "Error",
+      isServerless: false,
+      hasPostgresConfigured: hasPg,
+      tables: [],
+    };
   }
 }
