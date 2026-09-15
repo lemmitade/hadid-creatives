@@ -1,7 +1,7 @@
 import { readFile, writeFile, mkdir } from "fs/promises";
 import { existsSync, readdirSync, readFileSync } from "fs";
 import { join } from "path";
-import { neon, type NeonQueryFunction } from "@neondatabase/serverless";
+import { Pool } from "pg";
 
 const DATA_DIR = join(process.cwd(), "data");
 const DB_FILE = join(DATA_DIR, "hadid.sqlite");
@@ -21,12 +21,18 @@ interface SqliteDatabase {
 let sqliteDb: SqliteDatabase | null = null;
 let sqliteInitialized = false;
 
-let pgClient: NeonQueryFunction<false, false> | null = null;
+declare global {
+  // eslint-disable-next-line no-var
+  var _hadidPgPool: Pool | undefined;
+}
+
 let pgInitialized = false;
 
-function getPostgresUrl(): string | null {
+export function getPostgresUrl(): string | null {
   return (
     process.env.POSTGRES_URL ||
+    process.env.POSTGRES_DATABASE_URL ||
+    process.env.POSTGRES_PRISMA_DATABASE_URL ||
     process.env.DATABASE_URL ||
     process.env.POSTGRES_PRISMA_URL ||
     process.env.POSTGRES_URL_NON_POOLING ||
@@ -34,18 +40,32 @@ function getPostgresUrl(): string | null {
   );
 }
 
-function getPgClient(): NeonQueryFunction<false, false> | null {
+function getPgPool(): Pool | null {
   const url = getPostgresUrl();
   if (!url) return null;
-  if (!pgClient) {
+
+  if (!globalThis._hadidPgPool) {
     try {
-      pgClient = neon(url);
+      globalThis._hadidPgPool = new Pool({
+        connectionString: url,
+        ssl:
+          url.includes("sslmode=require") ||
+          url.includes("db.prisma.io") ||
+          url.includes("neon.tech") ||
+          url.includes("supabase.co")
+            ? { rejectUnauthorized: false }
+            : undefined,
+        max: 10,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 8000,
+      });
     } catch (err) {
-      console.error("Failed to initialize Neon Postgres client:", err);
+      console.error("Failed to initialize PostgreSQL pool:", err);
       return null;
     }
   }
-  return pgClient;
+
+  return globalThis._hadidPgPool;
 }
 
 async function ensureDir() {
@@ -61,19 +81,17 @@ function filePath(name: string): string {
 }
 
 /**
- * Initializes and auto-seeds Postgres on Vercel or serverless environments.
+ * Initializes and auto-seeds Postgres on Vercel or cloud environments.
  */
-async function ensurePgTables(sql: NeonQueryFunction<false, false>): Promise<void> {
+async function ensurePgTables(pool: Pool): Promise<void> {
   if (pgInitialized) return;
   try {
-    await sql`
+    await pool.query(`
       CREATE TABLE IF NOT EXISTS content_overrides (
         key TEXT PRIMARY KEY,
         value TEXT,
         updated_at TIMESTAMPTZ DEFAULT NOW()
       );
-    `;
-    await sql`
       CREATE TABLE IF NOT EXISTS collections (
         collection TEXT,
         id TEXT,
@@ -81,21 +99,21 @@ async function ensurePgTables(sql: NeonQueryFunction<false, false>): Promise<voi
         updated_at TIMESTAMPTZ DEFAULT NOW(),
         PRIMARY KEY (collection, id)
       );
-    `;
-    await sql`
       CREATE TABLE IF NOT EXISTS settings (
         key TEXT PRIMARY KEY,
         value TEXT,
         updated_at TIMESTAMPTZ DEFAULT NOW()
       );
-    `;
+    `);
 
     // Check if empty, then auto-seed from local data files
-    const existing = (await sql`SELECT COUNT(*)::int as count FROM collections`) as { count: number }[];
-    const count = Number(existing[0]?.count || 0);
+    const res = await pool.query<{ count: string }>(
+      "SELECT COUNT(*)::text as count FROM collections",
+    );
+    const count = parseInt(res.rows[0]?.count || "0", 10);
     if (count === 0) {
-      console.log("Seeding Neon/Vercel Postgres from local data files...");
-      await seedPgFromJson(sql);
+      console.log("Seeding cloud Postgres from local data files...");
+      await seedPgFromJson(pool);
     }
     pgInitialized = true;
   } catch (err) {
@@ -104,11 +122,11 @@ async function ensurePgTables(sql: NeonQueryFunction<false, false>): Promise<voi
 }
 
 /**
- * Seeds Postgres from local JSON data files
+ * Seeds Postgres from local JSON data files using fast batch operations
  */
-export async function seedPgFromJson(sql?: NeonQueryFunction<false, false>): Promise<number> {
-  const client = sql || getPgClient();
-  if (!client) return 0;
+export async function seedPgFromJson(customPool?: Pool): Promise<number> {
+  const pool = customPool || getPgPool();
+  if (!pool) return 0;
   let totalSeeded = 0;
 
   try {
@@ -125,34 +143,70 @@ export async function seedPgFromJson(sql?: NeonQueryFunction<false, false>): Pro
         const raw = readFileSync(fullPath, "utf-8");
         const parsed = JSON.parse(raw);
 
-        if (collection === "content-overrides" && typeof parsed === "object" && !Array.isArray(parsed)) {
-          for (const [k, v] of Object.entries(parsed)) {
-            await client`
-              INSERT INTO content_overrides (key, value, updated_at)
-              VALUES (${k}, ${String(v)}, ${now})
-              ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at
-            `;
-            totalSeeded++;
+        if (
+          collection === "content-overrides" &&
+          typeof parsed === "object" &&
+          !Array.isArray(parsed)
+        ) {
+          const entries = Object.entries(parsed);
+          if (entries.length > 0) {
+            const placeholders: string[] = [];
+            const values: unknown[] = [];
+            let idx = 1;
+            for (const [k, v] of entries) {
+              placeholders.push(`($${idx}, $${idx + 1}, $${idx + 2})`);
+              values.push(k, String(v), now);
+              idx += 3;
+            }
+            await pool.query(
+              `INSERT INTO content_overrides (key, value, updated_at) VALUES ${placeholders.join(", ")}
+               ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at`,
+              values,
+            );
+            totalSeeded += entries.length;
           }
-        } else if (collection === "settings" && typeof parsed === "object" && !Array.isArray(parsed)) {
-          for (const [k, v] of Object.entries(parsed)) {
-            const val = typeof v === "string" ? v : JSON.stringify(v);
-            await client`
-              INSERT INTO settings (key, value, updated_at)
-              VALUES (${k}, ${val}, ${now})
-              ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at
-            `;
-            totalSeeded++;
+        } else if (
+          collection === "settings" &&
+          typeof parsed === "object" &&
+          !Array.isArray(parsed)
+        ) {
+          const entries = Object.entries(parsed);
+          if (entries.length > 0) {
+            const placeholders: string[] = [];
+            const values: unknown[] = [];
+            let idx = 1;
+            for (const [k, v] of entries) {
+              const val = typeof v === "string" ? v : JSON.stringify(v);
+              placeholders.push(`($${idx}, $${idx + 1}, $${idx + 2})`);
+              values.push(k, val, now);
+              idx += 3;
+            }
+            await pool.query(
+              `INSERT INTO settings (key, value, updated_at) VALUES ${placeholders.join(", ")}
+               ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at`,
+              values,
+            );
+            totalSeeded += entries.length;
           }
-        } else if (Array.isArray(parsed)) {
-          for (const item of parsed) {
-            const id = (item as { id?: string }).id || generateId();
-            await client`
-              INSERT INTO collections (collection, id, data, updated_at)
-              VALUES (${collection}, ${String(id)}, ${JSON.stringify(item)}, ${now})
-              ON CONFLICT (collection, id) DO UPDATE SET data = EXCLUDED.data, updated_at = EXCLUDED.updated_at
-            `;
-            totalSeeded++;
+        } else if (Array.isArray(parsed) && parsed.length > 0) {
+          const chunkSize = 50;
+          for (let i = 0; i < parsed.length; i += chunkSize) {
+            const chunk = parsed.slice(i, i + chunkSize);
+            const placeholders: string[] = [];
+            const values: unknown[] = [];
+            let idx = 1;
+            for (const item of chunk) {
+              const id = (item as { id?: string }).id || generateId();
+              placeholders.push(`($${idx}, $${idx + 1}, $${idx + 2}, $${idx + 3})`);
+              values.push(collection, String(id), JSON.stringify(item), now);
+              idx += 4;
+            }
+            await pool.query(
+              `INSERT INTO collections (collection, id, data, updated_at) VALUES ${placeholders.join(", ")}
+               ON CONFLICT (collection, id) DO UPDATE SET data = EXCLUDED.data, updated_at = EXCLUDED.updated_at`,
+              values,
+            );
+            totalSeeded += chunk.length;
           }
         }
       } catch (fileErr) {
@@ -166,7 +220,7 @@ export async function seedPgFromJson(sql?: NeonQueryFunction<false, false>): Pro
 }
 
 /**
- * Initializes the SQLite database engine using Node.js native DatabaseSync for local development.
+ * Initializes the SQLite database engine using Node.js native DatabaseSync for local offline development.
  */
 function getDb(): SqliteDatabase | null {
   if (sqliteDb) return sqliteDb;
@@ -232,24 +286,49 @@ function migrateJsonToSqlite(db: SqliteDatabase) {
         const raw = readFileSync(fullPath, "utf-8");
         const parsed = JSON.parse(raw);
 
-        if (collection === "content-overrides" && typeof parsed === "object" && !Array.isArray(parsed)) {
-          const insertStmt = db.prepare("INSERT OR REPLACE INTO content_overrides (key, value, updated_at) VALUES (?, ?, ?)");
+        if (
+          collection === "content-overrides" &&
+          typeof parsed === "object" &&
+          !Array.isArray(parsed)
+        ) {
+          const insertStmt = db.prepare(
+            "INSERT OR REPLACE INTO content_overrides (key, value, updated_at) VALUES (?, ?, ?)",
+          );
           for (const [k, v] of Object.entries(parsed)) {
             insertStmt.run(k, String(v), new Date().toISOString());
           }
-        } else if (collection === "settings" && typeof parsed === "object" && !Array.isArray(parsed)) {
-          const insertStmt = db.prepare("INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, ?)");
+        } else if (
+          collection === "settings" &&
+          typeof parsed === "object" &&
+          !Array.isArray(parsed)
+        ) {
+          const insertStmt = db.prepare(
+            "INSERT OR REPLACE INTO settings (key, value, updated_at) VALUES (?, ?, ?)",
+          );
           for (const [k, v] of Object.entries(parsed)) {
-            insertStmt.run(k, typeof v === "string" ? v : JSON.stringify(v), new Date().toISOString());
+            insertStmt.run(
+              k,
+              typeof v === "string" ? v : JSON.stringify(v),
+              new Date().toISOString(),
+            );
           }
         } else if (Array.isArray(parsed)) {
-          const checkStmt = db.prepare("SELECT COUNT(*) as count FROM collections WHERE collection = ?");
+          const checkStmt = db.prepare(
+            "SELECT COUNT(*) as count FROM collections WHERE collection = ?",
+          );
           const res = checkStmt.get(collection) as { count: number } | undefined;
           if (!res || res.count === 0) {
-            const insertStmt = db.prepare("INSERT OR REPLACE INTO collections (collection, id, data, updated_at) VALUES (?, ?, ?, ?)");
+            const insertStmt = db.prepare(
+              "INSERT OR REPLACE INTO collections (collection, id, data, updated_at) VALUES (?, ?, ?, ?)",
+            );
             for (const item of parsed) {
               const id = item.id || generateId();
-              insertStmt.run(collection, String(id), JSON.stringify(item), new Date().toISOString());
+              insertStmt.run(
+                collection,
+                String(id),
+                JSON.stringify(item),
+                new Date().toISOString(),
+              );
             }
           }
         }
@@ -263,23 +342,27 @@ function migrateJsonToSqlite(db: SqliteDatabase) {
 }
 
 export async function readData<T>(name: string, fallback: T): Promise<T> {
-  // 1. Check Serverless Postgres (Vercel / Neon / Supabase)
-  const sql = getPgClient();
-  if (sql) {
+  // 1. Check Serverless / Cloud Postgres (Prisma Postgres / Vercel / Neon / Supabase)
+  const pool = getPgPool();
+  if (pool) {
     try {
-      await ensurePgTables(sql);
+      await ensurePgTables(pool);
       if (name === "content-overrides") {
-        const rows = (await sql`SELECT key, value FROM content_overrides`) as { key: string; value: string }[];
-        if (rows && rows.length > 0) {
+        const res = await pool.query<{ key: string; value: string }>(
+          "SELECT key, value FROM content_overrides",
+        );
+        if (res.rows.length > 0) {
           const obj: Record<string, string> = {};
-          for (const r of rows) obj[r.key] = r.value;
+          for (const r of res.rows) obj[r.key] = r.value;
           return obj as unknown as T;
         }
       } else if (name === "settings") {
-        const rows = (await sql`SELECT key, value FROM settings`) as { key: string; value: string }[];
-        if (rows && rows.length > 0) {
+        const res = await pool.query<{ key: string; value: string }>(
+          "SELECT key, value FROM settings",
+        );
+        if (res.rows.length > 0) {
           const obj: Record<string, unknown> = {};
-          for (const r of rows) {
+          for (const r of res.rows) {
             try {
               obj[r.key] = JSON.parse(r.value);
             } catch {
@@ -289,9 +372,12 @@ export async function readData<T>(name: string, fallback: T): Promise<T> {
           return obj as unknown as T;
         }
       } else {
-        const rows = (await sql`SELECT data FROM collections WHERE collection = ${name} ORDER BY updated_at ASC`) as { data: string }[];
-        if (rows && rows.length > 0) {
-          return rows.map((r) => JSON.parse(r.data)) as unknown as T;
+        const res = await pool.query<{ data: string }>(
+          "SELECT data FROM collections WHERE collection = $1 ORDER BY updated_at ASC",
+          [name],
+        );
+        if (res.rows.length > 0) {
+          return res.rows.map((r) => JSON.parse(r.data)) as unknown as T;
         }
       }
     } catch (pgErr) {
@@ -299,20 +385,24 @@ export async function readData<T>(name: string, fallback: T): Promise<T> {
     }
   }
 
-  // 2. Check local SQLite (for local development)
+  // 2. Check local SQLite (for local offline development)
   await ensureDir();
   const db = getDb();
   if (db) {
     try {
       if (name === "content-overrides") {
-        const rows = db.prepare("SELECT key, value FROM content_overrides").all() as { key: string; value: string }[];
+        const rows = db
+          .prepare("SELECT key, value FROM content_overrides")
+          .all() as { key: string; value: string }[];
         if (rows && rows.length > 0) {
           const obj: Record<string, string> = {};
           for (const r of rows) obj[r.key] = r.value;
           return obj as unknown as T;
         }
       } else if (name === "settings") {
-        const rows = db.prepare("SELECT key, value FROM settings").all() as { key: string; value: string }[];
+        const rows = db
+          .prepare("SELECT key, value FROM settings")
+          .all() as { key: string; value: string }[];
         if (rows && rows.length > 0) {
           const obj: Record<string, unknown> = {};
           for (const r of rows) {
@@ -325,7 +415,11 @@ export async function readData<T>(name: string, fallback: T): Promise<T> {
           return obj as unknown as T;
         }
       } else {
-        const rows = db.prepare("SELECT data FROM collections WHERE collection = ? ORDER BY rowid ASC").all(name) as { data: string }[];
+        const rows = db
+          .prepare(
+            "SELECT data FROM collections WHERE collection = ? ORDER BY rowid ASC",
+          )
+          .all(name) as { data: string }[];
         if (rows && rows.length > 0) {
           return rows.map((r) => JSON.parse(r.data)) as unknown as T;
         }
@@ -347,40 +441,90 @@ export async function readData<T>(name: string, fallback: T): Promise<T> {
 export async function writeData<T>(name: string, data: T): Promise<void> {
   const now = new Date().toISOString();
 
-  // 1. Write to Postgres if connected (Vercel production / Neon)
-  const sql = getPgClient();
-  if (sql) {
+  // 1. Fast Batch Write to Postgres if connected (Prisma Postgres / Vercel production)
+  const pool = getPgPool();
+  if (pool) {
     try {
-      await ensurePgTables(sql);
-      if (name === "content-overrides" && typeof data === "object" && !Array.isArray(data) && data !== null) {
-        await sql`DELETE FROM content_overrides`;
-        for (const [k, v] of Object.entries(data as Record<string, unknown>)) {
-          await sql`
-            INSERT INTO content_overrides (key, value, updated_at)
-            VALUES (${k}, ${String(v)}, ${now})
-            ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at
-          `;
+      await ensurePgTables(pool);
+      const client = await pool.connect();
+      try {
+        await client.query("BEGIN");
+        if (
+          name === "content-overrides" &&
+          typeof data === "object" &&
+          !Array.isArray(data) &&
+          data !== null
+        ) {
+          await client.query("DELETE FROM content_overrides");
+          const entries = Object.entries(data as Record<string, unknown>);
+          if (entries.length > 0) {
+            const placeholders: string[] = [];
+            const values: unknown[] = [];
+            let idx = 1;
+            for (const [k, v] of entries) {
+              placeholders.push(`($${idx}, $${idx + 1}, $${idx + 2})`);
+              values.push(k, String(v), now);
+              idx += 3;
+            }
+            await client.query(
+              `INSERT INTO content_overrides (key, value, updated_at) VALUES ${placeholders.join(", ")}
+               ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at`,
+              values,
+            );
+          }
+        } else if (
+          name === "settings" &&
+          typeof data === "object" &&
+          !Array.isArray(data) &&
+          data !== null
+        ) {
+          await client.query("DELETE FROM settings");
+          const entries = Object.entries(data as Record<string, unknown>);
+          if (entries.length > 0) {
+            const placeholders: string[] = [];
+            const values: unknown[] = [];
+            let idx = 1;
+            for (const [k, v] of entries) {
+              const val = typeof v === "string" ? v : JSON.stringify(v);
+              placeholders.push(`($${idx}, $${idx + 1}, $${idx + 2})`);
+              values.push(k, val, now);
+              idx += 3;
+            }
+            await client.query(
+              `INSERT INTO settings (key, value, updated_at) VALUES ${placeholders.join(", ")}
+               ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at`,
+              values,
+            );
+          }
+        } else if (Array.isArray(data)) {
+          await client.query("DELETE FROM collections WHERE collection = $1", [name]);
+          if (data.length > 0) {
+            const chunkSize = 50;
+            for (let i = 0; i < data.length; i += chunkSize) {
+              const chunk = data.slice(i, i + chunkSize);
+              const placeholders: string[] = [];
+              const values: unknown[] = [];
+              let idx = 1;
+              for (const item of chunk) {
+                const id = (item as { id?: string }).id || generateId();
+                placeholders.push(`($${idx}, $${idx + 1}, $${idx + 2}, $${idx + 3})`);
+                values.push(name, String(id), JSON.stringify(item), now);
+                idx += 4;
+              }
+              await client.query(
+                `INSERT INTO collections (collection, id, data, updated_at) VALUES ${placeholders.join(", ")}
+                 ON CONFLICT (collection, id) DO UPDATE SET data = EXCLUDED.data, updated_at = EXCLUDED.updated_at`,
+                values,
+              );
+            }
+          }
         }
-      } else if (name === "settings" && typeof data === "object" && !Array.isArray(data) && data !== null) {
-        await sql`DELETE FROM settings`;
-        for (const [k, v] of Object.entries(data as Record<string, unknown>)) {
-          const val = typeof v === "string" ? v : JSON.stringify(v);
-          await sql`
-            INSERT INTO settings (key, value, updated_at)
-            VALUES (${k}, ${val}, ${now})
-            ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = EXCLUDED.updated_at
-          `;
-        }
-      } else if (Array.isArray(data)) {
-        await sql`DELETE FROM collections WHERE collection = ${name}`;
-        for (const item of data) {
-          const id = (item as { id?: string }).id || generateId();
-          await sql`
-            INSERT INTO collections (collection, id, data, updated_at)
-            VALUES (${name}, ${String(id)}, ${JSON.stringify(item)}, ${now})
-            ON CONFLICT (collection, id) DO UPDATE SET data = EXCLUDED.data, updated_at = EXCLUDED.updated_at
-          `;
-        }
+        await client.query("COMMIT");
+      } catch (err) {
+        await client.query("ROLLBACK");
+        throw err;
+      } finally {
+        client.release();
       }
     } catch (e) {
       console.warn("Postgres write error, falling back to SQLite/JSON:", e);
@@ -392,21 +536,37 @@ export async function writeData<T>(name: string, data: T): Promise<void> {
   const db = getDb();
   if (db) {
     try {
-      if (name === "content-overrides" && typeof data === "object" && !Array.isArray(data) && data !== null) {
+      if (
+        name === "content-overrides" &&
+        typeof data === "object" &&
+        !Array.isArray(data) &&
+        data !== null
+      ) {
         db.exec("DELETE FROM content_overrides");
-        const insertStmt = db.prepare("INSERT INTO content_overrides (key, value, updated_at) VALUES (?, ?, ?)");
+        const insertStmt = db.prepare(
+          "INSERT INTO content_overrides (key, value, updated_at) VALUES (?, ?, ?)",
+        );
         for (const [k, v] of Object.entries(data as Record<string, unknown>)) {
           insertStmt.run(k, String(v), now);
         }
-      } else if (name === "settings" && typeof data === "object" && !Array.isArray(data) && data !== null) {
+      } else if (
+        name === "settings" &&
+        typeof data === "object" &&
+        !Array.isArray(data) &&
+        data !== null
+      ) {
         db.exec("DELETE FROM settings");
-        const insertStmt = db.prepare("INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)");
+        const insertStmt = db.prepare(
+          "INSERT INTO settings (key, value, updated_at) VALUES (?, ?, ?)",
+        );
         for (const [k, v] of Object.entries(data as Record<string, unknown>)) {
           insertStmt.run(k, typeof v === "string" ? v : JSON.stringify(v), now);
         }
       } else if (Array.isArray(data)) {
         db.prepare("DELETE FROM collections WHERE collection = ?").run(name);
-        const insertStmt = db.prepare("INSERT INTO collections (collection, id, data, updated_at) VALUES (?, ?, ?, ?)");
+        const insertStmt = db.prepare(
+          "INSERT INTO collections (collection, id, data, updated_at) VALUES (?, ?, ?, ?)",
+        );
         for (const item of data) {
           const id = (item as { id?: string }).id || generateId();
           insertStmt.run(name, String(id), JSON.stringify(item), now);
@@ -427,7 +587,7 @@ export async function writeData<T>(name: string, data: T): Promise<void> {
   }
 }
 
-/* Typed collection helpers */
+/* Atomic Collection Helpers */
 
 export async function readCollection<T extends { id: string }>(
   name: string,
@@ -446,9 +606,45 @@ export async function addItem<T extends { id: string }>(
   name: string,
   item: T,
 ): Promise<void> {
+  const pool = getPgPool();
+  const now = new Date().toISOString();
+
+  if (pool) {
+    try {
+      await ensurePgTables(pool);
+      await pool.query(
+        `INSERT INTO collections (collection, id, data, updated_at)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (collection, id) DO UPDATE SET data = EXCLUDED.data, updated_at = EXCLUDED.updated_at`,
+        [name, String(item.id), JSON.stringify(item), now],
+      );
+    } catch (e) {
+      console.warn("Postgres atomic addItem error:", e);
+    }
+  }
+
   const items = await readCollection<T>(name);
-  items.push(item);
-  await writeCollection(name, items);
+  if (!items.find((i) => i.id === item.id)) {
+    items.push(item);
+  }
+  // Dual write SQLite/JSON
+  await ensureDir();
+  const db = getDb();
+  if (db) {
+    try {
+      const insertStmt = db.prepare(
+        "INSERT OR REPLACE INTO collections (collection, id, data, updated_at) VALUES (?, ?, ?, ?)",
+      );
+      insertStmt.run(name, String(item.id), JSON.stringify(item), now);
+    } catch {
+      /* ignore */
+    }
+  }
+  try {
+    await writeFile(filePath(name), JSON.stringify(items, null, 2), "utf-8");
+  } catch {
+    /* ignore */
+  }
 }
 
 export async function updateItem<T extends { id: string }>(
@@ -467,6 +663,19 @@ export async function deleteItem<T extends { id: string }>(
   name: string,
   id: string,
 ): Promise<void> {
+  const pool = getPgPool();
+  if (pool) {
+    try {
+      await ensurePgTables(pool);
+      await pool.query(
+        "DELETE FROM collections WHERE collection = $1 AND id = $2",
+        [name, String(id)],
+      );
+    } catch (e) {
+      console.warn("Postgres deleteItem error:", e);
+    }
+  }
+
   const items = await readCollection<T>(name);
   await writeCollection(
     name,
@@ -486,24 +695,49 @@ export async function getDatabaseStatus(): Promise<{
   tables: { name: string; count: number }[];
 }> {
   const hasPg = !!getPostgresUrl();
-  const sql = getPgClient();
+  const pool = getPgPool();
 
-  if (sql) {
+  if (pool) {
     try {
-      await ensurePgTables(sql);
-      const overridesCountRes = (await sql`SELECT COUNT(*)::int as count FROM content_overrides`) as { count: number }[];
-      const settingsCountRes = (await sql`SELECT COUNT(*)::int as count FROM settings`) as { count: number }[];
-      const collectionsRows = (await sql`SELECT collection, COUNT(*)::int as count FROM collections GROUP BY collection`) as { collection: string; count: number }[];
+      await ensurePgTables(pool);
+      const overridesCountRes = await pool.query<{ count: string }>(
+        "SELECT COUNT(*)::text as count FROM content_overrides",
+      );
+      const settingsCountRes = await pool.query<{ count: string }>(
+        "SELECT COUNT(*)::text as count FROM settings",
+      );
+      const collectionsRows = await pool.query<{
+        collection: string;
+        count: string;
+      }>("SELECT collection, COUNT(*)::text as count FROM collections GROUP BY collection");
 
       const tables = [
-        { name: "content_overrides", count: Number(overridesCountRes[0]?.count || 0) },
-        { name: "settings", count: Number(settingsCountRes[0]?.count || 0) },
-        ...collectionsRows.map((r) => ({ name: `collection: ${r.collection}`, count: Number(r.count) })),
+        {
+          name: "content_overrides",
+          count: parseInt(overridesCountRes.rows[0]?.count || "0", 10),
+        },
+        {
+          name: "settings",
+          count: parseInt(settingsCountRes.rows[0]?.count || "0", 10),
+        },
+        ...collectionsRows.rows.map((r) => ({
+          name: `collection: ${r.collection}`,
+          count: parseInt(r.count, 10),
+        })),
       ];
+
+      const url = getPostgresUrl() || "";
+      const engineLabel = url.includes("prisma.io")
+        ? "Prisma Postgres (Cloud)"
+        : url.includes("neon.tech")
+        ? "Neon / Vercel Postgres"
+        : url.includes("supabase.co")
+        ? "Supabase Postgres"
+        : "PostgreSQL (Cloud)";
 
       return {
         connected: true,
-        engine: "Vercel Postgres / Neon (Serverless)",
+        engine: engineLabel,
         isServerless: true,
         hasPostgresConfigured: true,
         tables,
@@ -525,14 +759,29 @@ export async function getDatabaseStatus(): Promise<{
   }
 
   try {
-    const overridesCount = (db.prepare("SELECT COUNT(*) as count FROM content_overrides").get() as { count: number }).count;
-    const settingsCount = (db.prepare("SELECT COUNT(*) as count FROM settings").get() as { count: number }).count;
-    const collectionsRows = db.prepare("SELECT collection, COUNT(*) as count FROM collections GROUP BY collection").all() as { collection: string; count: number }[];
+    const overridesCount = (
+      db.prepare("SELECT COUNT(*) as count FROM content_overrides").get() as {
+        count: number;
+      }
+    ).count;
+    const settingsCount = (
+      db.prepare("SELECT COUNT(*) as count FROM settings").get() as {
+        count: number;
+      }
+    ).count;
+    const collectionsRows = db
+      .prepare(
+        "SELECT collection, COUNT(*) as count FROM collections GROUP BY collection",
+      )
+      .all() as { collection: string; count: number }[];
 
     const tables = [
       { name: "content_overrides", count: overridesCount },
       { name: "settings", count: settingsCount },
-      ...collectionsRows.map((r) => ({ name: `collection: ${r.collection}`, count: r.count })),
+      ...collectionsRows.map((r) => ({
+        name: `collection: ${r.collection}`,
+        count: r.count,
+      })),
     ];
 
     return {

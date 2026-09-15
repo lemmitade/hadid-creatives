@@ -11,10 +11,12 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",
+    "@types/pg": "^8.23.1",
     "jose": "^6.2.9",
     "lucide-react": "latest",
     "motion": "latest",
     "next": "latest",
+    "pg": "^8.23.0",
     "react": "latest",
     "react-dom": "latest"
   },
