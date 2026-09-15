@@ -1,0 +1,27 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# local
+.DS_Store
+.qa/
+/tmp/
+*.pem
+*.log
+
+# environment files
+.env*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# local test scripts with credentials
+test_*.js
+test_*.mjs

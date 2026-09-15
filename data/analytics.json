@@ -1,0 +1,835 @@
+{
+  "pageViews": [
+    {
+      "path": "/admin/services",
+      "referrer": "",
+      "timestamp": "2026-08-18T20:50:27.338Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "",
+      "timestamp": "2026-08-18T20:51:27.640Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "",
+      "timestamp": "2026-08-18T20:56:39.407Z"
+    },
+    {
+      "path": "/admin",
+      "referrer": "",
+      "timestamp": "2026-08-18T20:57:40.239Z"
+    },
+    {
+      "path": "/admin/case-studies",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:01:38.132Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:01:42.208Z"
+    },
+    {
+      "path": "/test",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:03:41.037Z"
+    },
+    {
+      "path": "/admin",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:12:27.996Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:12:33.422Z"
+    },
+    {
+      "path": "/admin/team",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:12:41.070Z"
+    },
+    {
+      "path": "/admin/case-studies",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:12:44.618Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:12:49.331Z"
+    },
+    {
+      "path": "/admin/logos",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:13:01.979Z"
+    },
+    {
+      "path": "/admin/case-studies",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:13:19.935Z"
+    },
+    {
+      "path": "/admin/media/images",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:13:35.788Z"
+    },
+    {
+      "path": "/admin/team",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:13:41.928Z"
+    },
+    {
+      "path": "/admin/blog",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:13:47.471Z"
+    },
+    {
+      "path": "/admin/testimonials",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:13:54.254Z"
+    },
+    {
+      "path": "/admin/logos",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:14:09.353Z"
+    },
+    {
+      "path": "/admin/case-studies",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:14:17.540Z"
+    },
+    {
+      "path": "/admin/testimonials",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:14:19.356Z"
+    },
+    {
+      "path": "/admin/case-studies",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:14:29.544Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:14:31.848Z"
+    },
+    {
+      "path": "/",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:14:57.768Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:14:59.706Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:15:04.060Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:15:30.154Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:15:33.042Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:15:33.415Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:10.476Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:14.419Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:18.971Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:24.162Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:28.766Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:33.601Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:39.608Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:43.328Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:48.873Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:53.594Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:22:57.887Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:23:05.689Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:23:11.623Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:23:15.611Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:23:19.861Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:23:24.614Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:23:32.474Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/work",
+      "timestamp": "2026-08-18T21:23:34.501Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/work",
+      "timestamp": "2026-08-18T21:23:40.334Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:23:43.387Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/work",
+      "timestamp": "2026-08-18T21:23:45.901Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/work",
+      "timestamp": "2026-08-18T21:23:50.721Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:25:46.906Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:25:50.756Z"
+    },
+    {
+      "path": "/admin/case-studies",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:25:56.094Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/work",
+      "timestamp": "2026-08-18T21:26:02.262Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:02.804Z"
+    },
+    {
+      "path": "/admin/case-studies",
+      "referrer": "http://localhost:3000/admin/case-studies",
+      "timestamp": "2026-08-18T21:26:07.130Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/work",
+      "timestamp": "2026-08-18T21:26:11.421Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:12.885Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/case-studies",
+      "timestamp": "2026-08-18T21:26:22.077Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:25.541Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/work",
+      "timestamp": "2026-08-18T21:26:25.997Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:29.158Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:33.041Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/work",
+      "timestamp": "2026-08-18T21:26:33.760Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:37.264Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:41.420Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:44.814Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:48.888Z"
+    },
+    {
+      "path": "/admin/content",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:52.179Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:26:54.627Z"
+    },
+    {
+      "path": "/admin/logos",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:27:03.266Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/admin/content",
+      "timestamp": "2026-08-18T21:27:15.332Z"
+    },
+    {
+      "path": "/admin/logos",
+      "referrer": "http://localhost:3000/admin/logos",
+      "timestamp": "2026-08-18T21:27:20.403Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:27:24.772Z"
+    },
+    {
+      "path": "/admin/logos",
+      "referrer": "http://localhost:3000/admin/logos",
+      "timestamp": "2026-08-18T21:27:28.140Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:27:31.379Z"
+    },
+    {
+      "path": "/admin/logos",
+      "referrer": "http://localhost:3000/admin/logos",
+      "timestamp": "2026-08-18T21:27:34.148Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:27:37.403Z"
+    },
+    {
+      "path": "/admin/logos",
+      "referrer": "http://localhost:3000/admin/logos",
+      "timestamp": "2026-08-18T21:27:41.065Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:27:43.623Z"
+    },
+    {
+      "path": "/admin/logos",
+      "referrer": "http://localhost:3000/admin/logos",
+      "timestamp": "2026-08-18T21:27:46.239Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:27:50.114Z"
+    },
+    {
+      "path": "/admin/logos",
+      "referrer": "http://localhost:3000/admin/logos",
+      "timestamp": "2026-08-18T21:27:51.909Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:27:54.827Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:27:59.468Z"
+    },
+    {
+      "path": "/admin/logos",
+      "referrer": "http://localhost:3000/admin/logos",
+      "timestamp": "2026-08-18T21:31:13.210Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:31:17.826Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/admin/logos",
+      "timestamp": "2026-08-18T21:31:27.627Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:31:31.923Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-18T21:31:35.638Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:31:40.275Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-18T21:31:44.490Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-18T21:31:49.264Z"
+    },
+    {
+      "path": "/insights",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-18T21:31:56.249Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-18T21:32:12.363Z"
+    },
+    {
+      "path": "/services",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-18T21:32:30.311Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-18T21:33:36.197Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:33:57.426Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:34:03.222Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:34:07.575Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:34:19.117Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:34:22.592Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:34:27.280Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:34:32.651Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:34:38.276Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:34:39.042Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:34:43.820Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:34:49.558Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:34:50.052Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:34:55.729Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T21:34:59.410Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:35:00.160Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:35:03.486Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:36:32.432Z"
+    },
+    {
+      "path": "/services",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:36:51.890Z"
+    },
+    {
+      "path": "/insights",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:36:56.975Z"
+    },
+    {
+      "path": "/behind-the-work",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:37:02.400Z"
+    },
+    {
+      "path": "/work",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:37:04.590Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:37:23.436Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:53:44.437Z"
+    },
+    {
+      "path": "/work/gm-furniture",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:53:52.894Z"
+    },
+    {
+      "path": "/work/gm-furniture",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:54:08.562Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:54:15.441Z"
+    },
+    {
+      "path": "/behind-the-work",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-18T21:54:50.473Z"
+    },
+    {
+      "path": "/admin/behind-the-work",
+      "referrer": "",
+      "timestamp": "2026-08-18T21:56:07.554Z"
+    },
+    {
+      "path": "/behind-the-work",
+      "referrer": "http://localhost:3000/behind-the-work",
+      "timestamp": "2026-08-18T21:56:10.551Z"
+    },
+    {
+      "path": "/admin/behind-the-work",
+      "referrer": "http://localhost:3000/admin/behind-the-work",
+      "timestamp": "2026-08-18T21:56:13.354Z"
+    },
+    {
+      "path": "/admin/behind-the-work",
+      "referrer": "http://localhost:3000/admin/behind-the-work",
+      "timestamp": "2026-08-18T21:56:20.316Z"
+    },
+    {
+      "path": "/admin/blog",
+      "referrer": "http://localhost:3000/admin/behind-the-work",
+      "timestamp": "2026-08-18T21:57:05.227Z"
+    },
+    {
+      "path": "/admin",
+      "referrer": "http://localhost:3000/admin/behind-the-work",
+      "timestamp": "2026-08-18T21:57:11.571Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/behind-the-work",
+      "timestamp": "2026-08-18T21:57:15.490Z"
+    },
+    {
+      "path": "/admin/services",
+      "referrer": "http://localhost:3000/admin/services",
+      "timestamp": "2026-08-18T23:18:59.833Z"
+    },
+    {
+      "path": "/",
+      "referrer": "",
+      "timestamp": "2026-08-19T16:48:20.697Z"
+    },
+    {
+      "path": "/services",
+      "referrer": "",
+      "timestamp": "2026-08-19T16:50:03.490Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "",
+      "timestamp": "2026-08-19T16:50:50.765Z"
+    },
+    {
+      "path": "/",
+      "referrer": "",
+      "timestamp": "2026-08-19T16:51:12.375Z"
+    },
+    {
+      "path": "/",
+      "referrer": "",
+      "timestamp": "2026-08-19T17:18:26.704Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:19:16.491Z"
+    },
+    {
+      "path": "/",
+      "referrer": "",
+      "timestamp": "2026-08-19T17:24:20.251Z"
+    },
+    {
+      "path": "/services",
+      "referrer": "",
+      "timestamp": "2026-08-19T17:24:49.111Z"
+    },
+    {
+      "path": "/insights",
+      "referrer": "",
+      "timestamp": "2026-08-19T17:24:56.002Z"
+    },
+    {
+      "path": "/behind-the-work",
+      "referrer": "",
+      "timestamp": "2026-08-19T17:25:02.613Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "",
+      "timestamp": "2026-08-19T17:25:11.894Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-19T17:55:34.723Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:55:36.244Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:58:36.154Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-19T17:58:45.736Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:58:49.761Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-19T17:58:54.738Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:59:00.183Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-19T17:59:03.517Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:59:06.983Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-19T17:59:10.948Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:59:15.668Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-19T17:59:19.994Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:59:24.927Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-19T17:59:30.103Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:59:35.440Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-19T17:59:39.818Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:59:44.799Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-19T17:59:49.718Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T17:59:53.403Z"
+    },
+    {
+      "path": "/about",
+      "referrer": "http://localhost:3000/about",
+      "timestamp": "2026-08-19T17:59:57.751Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T18:00:02.215Z"
+    },
+    {
+      "path": "/",
+      "referrer": "http://localhost:3000/",
+      "timestamp": "2026-08-19T18:00:09.057Z"
+    }
+  ],
+  "events": []
+}

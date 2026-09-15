@@ -1,0 +1,34 @@
+[
+  {
+    "id": "gm-furniture",
+    "name": "GM Furniture",
+    "logoUrl": "/media/brand/hadid-mark-1.png",
+    "caseStudySlug": "gm-furniture",
+    "enabled": true,
+    "order": 0
+  },
+  {
+    "id": "worthy-homes",
+    "name": "Worthy Homes",
+    "logoUrl": "/media/brand/hadid-mark-1.png",
+    "caseStudySlug": "worthy-homes",
+    "enabled": true,
+    "order": 1
+  },
+  {
+    "id": "habesha-brothers",
+    "name": "Habesha Brothers",
+    "logoUrl": "/media/brand/hadid-mark-1.png",
+    "caseStudySlug": "habesha-brothers",
+    "enabled": true,
+    "order": 2
+  },
+  {
+    "id": "daily-water",
+    "name": "Daily Water",
+    "logoUrl": "/media/brand/hadid-mark-1.png",
+    "caseStudySlug": "daily-water",
+    "enabled": true,
+    "order": 3
+  }
+]

@@ -1,0 +1,532 @@
+Build a production-quality, cinematic, multi-page portfolio website for a digital marketing and social media agency named Hadid Creatives.
+
+Start with a planning phase. Inspect the workspace, attached brand documents, and reference website before editing code. Present a concise implementation plan, then continue building unless a genuine blocker requires clarification.
+
+WORKSPACE
+D:\ai stuff\hadid portfolio website
+
+SOURCE MATERIAL
+1. Brand guidelines:
+C:\Users\user\Downloads\Telegram Desktop\HADID LOGO USEAGE.pdf
+
+2. Previous company proposal:
+C:\Users\user\Downloads\Telegram Desktop\HADID PROPOSAL final.pdf
+
+3. Design and interaction inspiration:
+https://studio.yosefawgichewd.com/
+
+Use the inspiration website for its cinematic presentation, editorial grid, oversized typography, project reel, motion language, day/night treatment, numbered sections, timecode details, sticky navigation, and polished transitions.
+
+Do not copy its identity, text, layout, or components one-to-one. Translate the overall level of creativity and interaction into Hadid Creatives’ identity.
+
+IMPORTANT BRAND CORRECTIONS
+- The correct company name is “Hadid Creatives.”
+- Never use “Hadid Digitals,” even if it appears in the old proposal.
+- Ignore the “solar energy vision” wording in the brand guide. It is incorrect leftover copy.
+- Do not use the outdated phone numbers or pricing plans from the proposal.
+- The website must be English-only.
+- Do not highlight founders or individual team members.
+- Present Hadid as one unified, scalable creative collective.
+- Do not include team names, personal biographies, individual portraits, or face-led founder sections.
+- Do not include testimonials yet.
+- Do not publish prices. Services should be offered through tailored consultations.
+
+BUSINESS POSITIONING
+Hadid Creatives works with established companies that want to strengthen their digital presence and generate measurable business growth.
+
+The agency has experience across:
+- Real estate
+- Medical and healthcare
+- Furniture
+- Food and beverage
+- Other established consumer and service industries
+
+Hadid combines professional content production, digital strategy, social media management, paid amplification, website design, and consultancy.
+
+The brand should feel:
+- Cinematic
+- Confident
+- Modern
+- Strategic
+- Creative
+- Technically capable
+- Results-focused
+- Premium, without feeling corporate or cold
+- Energetic, without feeling immature
+
+BRAND STORY
+Use this as the basis for the About copy, refining it where necessary:
+
+“Hadid Creatives began in 2024 when five friends working across digital marketing discovered that their individual talents formed something far stronger together. Strategy, storytelling, production, design, and growth came together naturally—first through shared projects, then as a unified creative force.
+
+What started as a collaboration became Hadid: a collective built to help established brands earn attention, strengthen their digital presence, and turn creativity into measurable business results. Today, Hadid operates as one identity—adaptable, scalable, and always larger than any one individual.”
+
+Avoid calling the founders “young professionals” or “social media enthusiasts.” The writing should communicate experience, confidence, professionalism, and capability.
+
+BRAND SYSTEM
+Follow the attached brand guide.
+
+Primary colors:
+- Soft Blue: #00AEF0
+- Lime: #A3E635
+- Navy: #003566
+- White: #FFFFFF
+- Near-black: #221F1F or an accessible equivalent
+
+Typography:
+- Headlines: Hanken Grotesk
+- Body text: Inter
+- A restrained monospace font may be introduced for timecodes, project numbers, metrics, and technical labels.
+
+Visual treatment:
+- Dark-first interface using navy and near-black
+- Optional Day/Night theme toggle
+- Soft blue as the dominant brand color
+- Lime used selectively for statistics, active states, calls to action, progress indicators, and hover moments
+- Warm white or off-white for the light theme
+- Strong typography and purposeful negative space
+- Editorial grid lines and structured layouts
+- Use the logo symbol as inspiration for masks, framing devices, transitions, and graphic patterns
+- Avoid generic glassmorphism, excessive gradients, stock-template layouts, and random decorative blobs
+- Do not distort, recolor, stretch, or redraw the logo incorrectly
+
+If a web-ready logo asset is not available, create a temporary high-quality asset from the PDF or place the logo behind an easily replaceable Logo component. Preserve the official proportions.
+
+CORE MESSAGE
+Use the following hero direction:
+
+Headline:
+“Built to be seen. Made to perform.”
+
+Supporting copy:
+“Hadid Creatives helps established brands strengthen their digital presence through cinematic content, social strategy, paid amplification, web design, and practical consultancy.”
+
+Primary CTA:
+“Start on WhatsApp”
+
+Secondary CTA:
+“Explore the work”
+
+The hero should immediately communicate both creative production and measurable growth.
+
+WEBSITE ARCHITECTURE
+Create a cinematic multi-page website with the following routes:
+
+1. Home
+/
+2. Work index
+/work
+3. GM Furniture case study
+/work/gm-furniture
+4. Worthy Homes case study
+/work/worthy-homes
+5. Habesha Brothers Catering case study
+/work/habesha-brothers
+6. Daily Water case study
+/work/daily-water
+7. Services
+/services
+8. Behind the Work
+/behind-the-work
+9. About
+/about
+10. Contact
+/contact
+
+Include an elegant custom 404 page.
+
+HOME PAGE
+Structure the homepage in this order:
+
+1. Sticky navigation
+- Logo
+- Work
+- Services
+- Behind the Work
+- About
+- Day/Night toggle
+- Prominent WhatsApp CTA
+
+2. Cinematic hero
+- Oversized headline
+- Short positioning statement
+- Primary and secondary CTAs
+- Showreel-style visual
+- Timecode or production-interface details
+- Subtle scrolling cue
+- Use an abstract branded motion placeholder until real footage is supplied
+
+3. Trust and results strip
+Show selected client names/logos and concise credibility metrics.
+
+4. Featured case studies
+Present the four verified case studies with strong imagery, motion, industry labels, and headline metrics.
+
+5. Results/analytics section
+Create an editorial analytics display using animated counters, before-and-after values, graph lines, social-media UI fragments, and real screenshots when available.
+
+All metrics must remain legible without animation.
+
+6. Selected content
+Show a cinematic grid or reel of client videos and campaigns.
+
+7. Behind-the-scenes section
+Show filming, equipment, planning, editing, and production moments.
+Include a CTA to the dedicated Behind the Work page.
+
+8. Services overview
+Use five numbered service areas.
+
+9. Process
+Present a concise process:
+- Discover
+- Strategize
+- Create
+- Launch
+- Measure and improve
+
+10. Brand story
+Present Hadid as a collective creative engine.
+Do not show or name individual founders.
+
+11. Final conversion section
+Use a strong closing line and a large WhatsApp button.
+
+12. Footer
+Include navigation, social links, placeholder email, and WhatsApp.
+
+SERVICES
+Only promote these core services:
+
+1. Professional Content Creation
+- Professional filming
+- Creative concepts
+- Script development
+- Direction
+- Photography and video
+- Editing and motion graphics
+- Brand-consistent content
+- State-of-the-art production equipment
+
+2. Social Media Management
+- Strategy
+- Content calendars
+- Publishing
+- Community management
+- Performance monitoring
+- Reporting and optimization
+
+3. Boosting and Paid Social
+- Campaign planning
+- Targeted advertising
+- Brand-awareness campaigns
+- Lead-generation support
+- Audience testing
+- Performance optimization
+
+Use “paid social” or “paid amplification” in professional copy while still making the term “boosting” understandable.
+
+4. Website Design
+- Strategy and structure
+- UX/UI design
+- Responsive websites
+- Conversion-focused landing pages
+- Performance and usability
+
+5. Consultancy and Social Media Training
+- Digital presence audits
+- Strategy workshops
+- In-house team training
+- Content-system development
+- Platform guidance
+- Practical consultation
+
+Do not advertise influencer marketing, event organization, brand identity development, or unrelated proposal extras as core services.
+
+VERIFIED CASE STUDIES
+The following names and figures can be publicly displayed. Do not invent additional results.
+
+GM Furniture:
+- Furniture sector
+- Grew from 3,000 to 30,800 followers
+- Generated more than ETB 8 million in revenue
+- Timeframe: six months
+
+Worthy Homes:
+- Real estate sector
+- Grew from 16,700 to 23,200 followers
+- Approximately four homes sold through social media activity
+
+Habesha Brothers Catering:
+- Food and beverage/catering sector
+- Grew from 19,000 to 108,000 TikTok followers
+- Timeframe: nine months
+
+Daily Water:
+- Beverage sector
+- Launched from zero
+- Built an initial audience of approximately 2,000 followers
+
+CASE-STUDY TEMPLATE
+Every case-study page should contain:
+
+- Cinematic project hero
+- Client name and industry
+- Short project summary
+- Initial challenge
+- Hadid’s strategy
+- Content and execution approach
+- Verified results
+- Animated but accessible data visualization
+- Client media gallery
+- Analytics screenshot area
+- Behind-the-scenes production area
+- Related service tags
+- Next case-study navigation
+- WhatsApp conversion CTA
+
+Do not fabricate campaign details that were not supplied. Use concise placeholder copy where more information will be added later.
+
+BEHIND THE WORK PAGE
+Create a visually rich production page showing:
+
+- Pre-production planning
+- Creative concepts and scripts
+- Professional cameras and equipment
+- On-location production
+- Lighting and direction
+- Editing and post-production
+- Analytics review
+- Content publishing and optimization
+
+The purpose is to prove that Hadid combines professional production craft with digital strategy.
+
+Do not center identifiable team personalities. Crop, frame, silhouette, or compose imagery around the collective work, hands, equipment, screens, sets, and production activity.
+
+PLACEHOLDER MEDIA
+The real media library is not organized yet.
+
+Build a replacement-friendly placeholder system for:
+- Hero showreel
+- Client videos
+- Analytics screenshots
+- BTS footage
+- Equipment shots
+- Team/collective imagery
+- Client logos
+- Video poster images
+
+Use neutral, premium, brand-aligned placeholders.
+
+Allowed placeholder approaches:
+- Abstract branded motion graphics
+- Soft-blue and lime motion loops
+- Camera-interface treatments
+- Equipment macro imagery
+- Editing timeline compositions
+- Blurred or silhouetted production scenes
+- Device mockups
+- Clearly labeled analytics mockup frames
+
+Do not generate fake client campaigns, fake testimonials, fake analytics, or visuals that could be mistaken for verified work.
+
+Use centralized media configuration so real files can be swapped later without changing layouts or components. Use predictable filenames and include a README explaining how to replace every placeholder.
+
+Suggested structure:
+- /public/media/hero/
+- /public/media/work/
+- /public/media/bts/
+- /public/media/analytics/
+- /public/media/clients/
+- /public/media/placeholders/
+
+Store case-study content and media references in centralized typed data files rather than hardcoding them repeatedly.
+
+INTERACTIONS AND MOTION
+Create a polished cinematic motion system inspired by the reference site:
+
+- Smooth page transitions
+- Sticky navigation
+- Subtle header compression on scroll
+- Scroll-triggered typography reveals
+- Project-card hover previews
+- Image-mask transitions inspired by the Hadid logo
+- Animated metric counters
+- Graph-line drawing
+- Timecode details
+- Numbered section labels
+- Horizontal project reel where appropriate
+- Magnetic or responsive CTA behavior
+- Subtle cursor treatment on desktop only
+- Theme transition between Day and Night modes
+- Case-study next-project transitions
+
+Motion must feel intentional and premium.
+
+Requirements:
+- Respect prefers-reduced-motion
+- Avoid scroll hijacking
+- Avoid excessive parallax
+- Maintain smooth performance
+- Ensure every interaction works with touch and keyboard input
+- Do not hide essential information behind hover states
+
+CONTACT AND CONVERSION
+The primary conversion method is WhatsApp.
+
+WhatsApp number:
++251 94 802 7407
+
+Use:
+https://wa.me/251948027407
+
+Add a useful prefilled message, such as:
+“Hello Hadid Creatives, I’d like to discuss growing our digital presence.”
+
+Primary CTA wording can vary contextually:
+- Start on WhatsApp
+- Discuss a project
+- Build your digital presence
+- Talk to Hadid
+
+The Contact page should remain short and conversion-focused.
+
+Include:
+- WhatsApp CTA
+- Short project inquiry form if appropriate
+- Editable placeholder email: hello@hadidcreatives.com
+- Social links
+
+SOCIAL LINKS
+LinkedIn:
+https://www.linkedin.com/in/hadid-creatives-683406363/
+
+Instagram:
+https://www.instagram.com/hadidcreatives/
+
+TikTok:
+https://www.tiktok.com/@hadid.creatives
+
+Open external social links safely in new tabs.
+
+TECHNICAL DIRECTION
+First inspect the existing workspace and preserve any useful setup.
+
+If the workspace is empty or does not contain an established stack, use:
+- Next.js with the App Router
+- TypeScript
+- Tailwind CSS
+- Motion/Framer Motion for animation
+- Reusable, accessible React components
+- Local or properly optimized web fonts
+- Next/Image or equivalent optimized media handling
+
+Do not add heavy 3D or WebGL dependencies unless they materially improve the design and remain performant.
+
+Create:
+- Reusable layout and navigation components
+- Reusable case-study template
+- Reusable media components
+- Centralized site configuration
+- Centralized case-study data
+- Theme system
+- SEO metadata
+- Open Graph metadata
+- Sitemap
+- robots.txt
+- Favicon and app icons based on the Hadid mark where possible
+
+RESPONSIVE BEHAVIOR
+Design and verify:
+- Large desktop
+- Standard laptop
+- Tablet
+- Small mobile
+
+Mobile must feel intentionally designed, not like a compressed desktop page.
+
+On mobile:
+- Simplify motion
+- Preserve typography hierarchy
+- Replace horizontal interactions with touch-friendly patterns
+- Keep WhatsApp CTA easy to reach
+- Prevent overflow and clipped text
+- Maintain readable analytics and case-study results
+
+ACCESSIBILITY
+Meet strong accessibility standards:
+
+- Semantic HTML
+- Keyboard navigation
+- Visible focus states
+- Correct heading hierarchy
+- Accessible theme toggle
+- Sufficient contrast
+- Meaningful alt text
+- Captions or text alternatives for video
+- Reduced-motion mode
+- Buttons and links with clear labels
+- No autoplay audio
+- Decorative imagery hidden from screen readers when appropriate
+
+PERFORMANCE
+Prioritize fast loading despite the cinematic design:
+
+- Optimize images and poster frames
+- Lazy-load below-the-fold media
+- Avoid loading every video immediately
+- Use poster images before interaction
+- Compress placeholder assets
+- Prevent cumulative layout shift
+- Keep animation on transform and opacity where possible
+- Avoid unnecessary client-side rendering
+- Ensure no console errors or hydration warnings
+
+SEO AND COPY
+Use natural, confident English.
+
+Avoid:
+- Marketing clichés
+- Empty superlatives
+- Overly youthful language
+- Generic AI copy
+- Long paragraphs
+- Claims that are not supported by the supplied material
+
+Suggested title:
+“Hadid Creatives | Content, Social Media and Digital Growth”
+
+Suggested description:
+“Hadid Creatives helps established brands grow their digital presence through professional content creation, social media management, paid amplification, website design, and consultancy.”
+
+DELIVERABLES
+Complete the implementation, not just a wireframe.
+
+Provide:
+- Fully working multi-page website
+- Responsive layouts
+- All animations and interactions
+- Theme system
+- Case-study templates
+- Placeholder media system
+- Centralized editable content
+- Placeholder replacement README
+- Working WhatsApp links
+- Working social links
+- SEO setup
+- Production build
+
+VERIFICATION
+Before considering the work complete:
+
+1. Run the appropriate formatter, lint, type-check, and production build.
+2. Fix all relevant errors and warnings.
+3. Test every route.
+4. Verify the website visually in a browser.
+5. Test desktop, tablet, and mobile layouts.
+6. Verify navigation, theme toggle, animations, reduced-motion behavior, social links, and WhatsApp links.
+7. Confirm there are no broken images, missing media, overflowing sections, clipped text, hydration errors, or console errors.
+8. Confirm the design remains strong even while placeholder media is being used.
+9. Summarize the implementation and explain exactly where future media should be placed.
+
+The finished result should feel like a confident creative agency with serious production capabilities and proven business results—not a generic marketing template.

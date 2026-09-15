@@ -1,0 +1,42 @@
+[
+  {
+    "id": "01",
+    "title": "Professional content creation",
+    "short": "Ideas, captured with intent.",
+    "description": "From the first line of a script to the final color pass, we build high-finish social content around what the brand needs to achieve.",
+    "capabilities": "Professional filming, Creative concepts and scripts, Direction and photography, Editing and motion graphics, Brand-consistent content, Production-grade equipment",
+    "order": 1
+  },
+  {
+    "id": "02",
+    "title": "Social media management",
+    "short": "A consistent presence, run with clarity.",
+    "description": "We turn scattered publishing into an organized content system with a clear rhythm, purpose, and feedback loop.",
+    "capabilities": "Social strategy, Content calendars, Publishing, Community management, Performance monitoring, Reporting and optimization",
+    "order": 2
+  },
+  {
+    "id": "03",
+    "title": "Paid social & boosting",
+    "short": "Put strong content in front of the right people.",
+    "description": "Campaigns are planned around the business objective, then tested and refined against real platform performance.",
+    "capabilities": "Campaign planning, Targeted advertising, Brand awareness, Lead-generation support, Audience testing, Performance optimization",
+    "order": 3
+  },
+  {
+    "id": "04",
+    "title": "Website design",
+    "short": "Digital spaces that make the next action clear.",
+    "description": "We design responsive, conversion-minded websites that extend the brand beyond the feed and into a complete digital presence.",
+    "capabilities": "Strategy and structure, UX and UI design, Responsive websites, Campaign landing pages, Performance and usability",
+    "order": 4
+  },
+  {
+    "id": "05",
+    "title": "Consultancy & training",
+    "short": "Build capability inside the business.",
+    "description": "Practical guidance for teams that need a clearer strategy, a better system, or the skills to operate with confidence.",
+    "capabilities": "Digital presence audits, Strategy workshops, In-house team training, Content-system development, Platform guidance, Practical consultation",
+    "order": 5
+  }
+]

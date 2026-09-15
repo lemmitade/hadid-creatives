@@ -1,0 +1,94 @@
+[
+  {
+    "id": "gm-furniture",
+    "slug": "gm-furniture",
+    "number": "01",
+    "client": "GM Furniture",
+    "industry": "Furniture",
+    "summary": "Growing an established furniture brand's social audience and translating attention into measurable commercial response.",
+    "challenge": "Strengthen GM Furniture's digital presence and support demand through social media marketing.",
+    "approach": "Hadid supported the brand with a focused combination of content production, social distribution, and platform-led iteration.",
+    "outcome": "The audience grew more than tenfold, while social media activity contributed to more than ETB 8 million in reported revenue over six months.",
+    "headlineMetric": "10.2x",
+    "headlineLabel": "audience growth",
+    "metrics": [
+      { "value": "3K", "label": "Starting followers" },
+      { "value": "30.8K", "label": "Followers after growth" },
+      { "value": "> ETB 8M", "label": "Reported revenue" },
+      { "value": "6 months", "label": "Timeframe" }
+    ],
+    "services": "Content creation, Social management, Paid social",
+    "palette": "blue",
+    "coverImage": "/media/work/cover-gm-furniture.jpg",
+    "order": 1
+  },
+  {
+    "id": "worthy-homes",
+    "slug": "worthy-homes",
+    "number": "02",
+    "client": "Worthy Homes",
+    "industry": "Real estate",
+    "summary": "Expanding reach for a real-estate brand and supporting sales through a stronger social presence.",
+    "challenge": "Increase audience attention around the brand's property offering and help social activity contribute to sales.",
+    "approach": "Hadid built a more consistent social presence around content designed to make the offering visible and easier to engage with.",
+    "outcome": "The audience increased from 16.7K to 23.2K, with approximately four homes sold through social media activity.",
+    "headlineMetric": "4",
+    "headlineLabel": "homes sold via social",
+    "metrics": [
+      { "value": "16.7K", "label": "Starting followers" },
+      { "value": "23.2K", "label": "Followers after growth" },
+      { "value": "+6.5K", "label": "Audience increase" },
+      { "value": "~4", "label": "Homes sold" }
+    ],
+    "services": "Content creation, Social management, Paid social",
+    "palette": "lime",
+    "coverImage": "/media/work/cover-worthy-homes.jpg",
+    "order": 2
+  },
+  {
+    "id": "habesha-brothers",
+    "slug": "habesha-brothers",
+    "number": "03",
+    "client": "Habesha Brothers Catering",
+    "industry": "Food & beverage",
+    "summary": "Scaling a catering brand's TikTok audience while increasing its visibility, reach, and engagement.",
+    "challenge": "Create sustained platform momentum for a food and beverage business in an attention-heavy category.",
+    "approach": "Hadid supported a consistent, social-first content presence built for the rhythm and discovery behavior of TikTok.",
+    "outcome": "TikTok followers grew from 19K to 108K over nine months, establishing a significantly larger audience for the brand.",
+    "headlineMetric": "+89K",
+    "headlineLabel": "TikTok followers",
+    "metrics": [
+      { "value": "19K", "label": "Starting followers" },
+      { "value": "108K", "label": "Followers after growth" },
+      { "value": "5.7x", "label": "Audience growth" },
+      { "value": "9 months", "label": "Timeframe" }
+    ],
+    "services": "Content creation, Social management, Platform strategy",
+    "palette": "orange",
+    "coverImage": "/media/work/cover-habesha-brothers.jpg",
+    "order": 3
+  },
+  {
+    "id": "daily-water",
+    "slug": "daily-water",
+    "number": "04",
+    "client": "Daily Water",
+    "industry": "Beverage",
+    "summary": "Launching a new social presence from zero and building the first layer of audience awareness.",
+    "challenge": "Establish a credible digital starting point for a beverage brand with no existing social audience.",
+    "approach": "Hadid supported the launch with an initial content and publishing foundation designed to begin audience discovery.",
+    "outcome": "The brand launched from scratch and built an initial audience of approximately 2,000 followers.",
+    "headlineMetric": "0→2K",
+    "headlineLabel": "launch audience",
+    "metrics": [
+      { "value": "0", "label": "Starting audience" },
+      { "value": "~2K", "label": "Followers built" },
+      { "value": "Launch", "label": "Starting stage" },
+      { "value": "Organic", "label": "Audience foundation" }
+    ],
+    "services": "Launch strategy, Content creation, Social management",
+    "palette": "aqua",
+    "coverImage": "/media/work/cover-daily-water.jpg",
+    "order": 4
+  }
+]

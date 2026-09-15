@@ -1,0 +1,7 @@
+[
+  { "id": "strategy", "label": "Strategy" },
+  { "id": "content-creation", "label": "Content Creation" },
+  { "id": "social-media", "label": "Social Media" },
+  { "id": "paid-social", "label": "Paid Social" },
+  { "id": "case-study", "label": "Case Study" }
+]

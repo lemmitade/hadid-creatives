@@ -1,0 +1,26 @@
+[
+  {
+    "id": "faq-1",
+    "question": "How does Hadid Creatives work with existing in-house teams?",
+    "answer": "We integrate seamlessly with your existing marketing leadership, providing strategic direction, production-grade video assets, and distribution execution without stepping on internal workflows.",
+    "order": 1
+  },
+  {
+    "id": "faq-2",
+    "question": "Do you offer pre-set packages or custom scopes?",
+    "answer": "Every engagement is built around your specific business objective—whether that is brand positioning, social channel revitalization, targeted lead generation, or a bespoke website build.",
+    "order": 2
+  },
+  {
+    "id": "faq-3",
+    "question": "What is the typical timeline for an initial engagement?",
+    "answer": "Strategy and initial campaign production typically launch within 2 to 3 weeks of the discovery call and brief confirmation.",
+    "order": 3
+  },
+  {
+    "id": "faq-4",
+    "question": "How do you measure and report performance?",
+    "answer": "We track verified metrics including audience reach, engagement quality, view-through rates, qualified inquiries, and conversion ROI—reviewed monthly with strategic action items.",
+    "order": 4
+  }
+]

@@ -1,0 +1,35 @@
+[
+  {
+    "id": "t-1",
+    "clientName": "GM Furniture",
+    "company": "GM Furniture",
+    "position": "Brand Director",
+    "testimonial": "Hadid transformed our social media presence. In 90 days our video reach grew by over 340% and directly drove showroom inquiries.",
+    "rating": 5,
+    "imageUrl": "/media/brand/hadid-mark-1.png",
+    "featured": true,
+    "order": 1
+  },
+  {
+    "id": "t-2",
+    "clientName": "Worthy Homes",
+    "company": "Worthy Homes Real Estate",
+    "position": "Managing Director",
+    "testimonial": "The cinematic quality of their production combined with their paid amplification strategy yielded 3.8x return on ad spend.",
+    "rating": 5,
+    "imageUrl": "/media/brand/hadid-mark-1.png",
+    "featured": true,
+    "order": 2
+  },
+  {
+    "id": "t-3",
+    "clientName": "Habesha Brothers",
+    "company": "Habesha Brothers F&B",
+    "position": "Founder",
+    "testimonial": "Clean, structured, and consistent. Working with Hadid gave our brand the modern identity and digital rhythm it needed.",
+    "rating": 5,
+    "imageUrl": "/media/brand/hadid-mark-1.png",
+    "featured": true,
+    "order": 3
+  }
+]

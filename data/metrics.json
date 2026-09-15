@@ -1,0 +1,6 @@
+[
+  { "id": "brands-served", "label": "Brands served", "value": "4", "order": 0 },
+  { "id": "campaign-reach", "label": "Campaign reach", "value": "500K+", "order": 1 },
+  { "id": "content-pieces", "label": "Content pieces created", "value": "200+", "order": 2 },
+  { "id": "followers-grown", "label": "Total followers grown", "value": "125K+", "order": 3 }
+]

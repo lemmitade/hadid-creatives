@@ -1,0 +1,41 @@
+[
+  {
+    "id": "bts-1",
+    "title": "Camera Systems & Cinema Lighting",
+    "phase": "02 Production",
+    "type": "image",
+    "mediaUrl": "/media/bts/camera-rig-placeholder.png",
+    "videoUrl": "",
+    "linkUrl": "/work/gm-furniture",
+    "caption": "Hands adjusting a professional cinema camera rig on set.",
+    "equipment": "Sony FX3 / Cooke Anamorphic / Aputure 600d",
+    "featured": true,
+    "order": 1
+  },
+  {
+    "id": "bts-2",
+    "title": "Editing, Pacing & Color Science",
+    "phase": "03 Post-production",
+    "type": "image",
+    "mediaUrl": "/media/bts/editing-suite-placeholder.png",
+    "videoUrl": "",
+    "linkUrl": "/work/worthy-homes",
+    "caption": "Color grading and motion graphic assembly in the editing suite.",
+    "equipment": "DaVinci Resolve Studio / Apple M-Max / calibrated OLED",
+    "featured": true,
+    "order": 2
+  },
+  {
+    "id": "bts-3",
+    "title": "On-Set Direction & Food Styling",
+    "phase": "02 Production",
+    "type": "image",
+    "mediaUrl": "/media/hero/hero-production-placeholder.png",
+    "videoUrl": "",
+    "linkUrl": "/work/habesha-brothers",
+    "caption": "High frame-rate macro capture for TikTok-first food campaigns.",
+    "equipment": "120fps Cinema Capture / High-CRI Probe Lighting",
+    "featured": true,
+    "order": 3
+  }
+]

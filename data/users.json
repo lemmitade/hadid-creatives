@@ -1,0 +1,11 @@
+[
+  {
+    "id": "1787085031963-thteu0",
+    "email": "admin@hadidcreatives.com",
+    "password": "HadidAdmin2026!",
+    "name": "Super Admin",
+    "role": "super_admin",
+    "active": true,
+    "createdAt": "2026-08-18T20:30:31.963Z"
+  }
+]
