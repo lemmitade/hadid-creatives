@@ -52,6 +52,29 @@ export async function POST(
     if (action === "add") {
       const data = await readData<Record<string, unknown>[]>(collection, []);
       const newItem = { ...item, id: item.id || generateId() };
+
+      // Auto-resolve videoId for selected-cuts if TikTok link
+      if (collection === "selected-cuts" && typeof newItem.videoUrl === "string" && !newItem.videoId) {
+        const directMatch = (newItem.videoUrl as string).match(/\/video\/(\d+)/);
+        if (directMatch) {
+          newItem.videoId = directMatch[1];
+          newItem.embedUrl = `https://www.tiktok.com/player/v1/${directMatch[1]}?autoplay=1`;
+        } else if ((newItem.videoUrl as string).includes("tiktok.com")) {
+          try {
+            const res = await fetch(newItem.videoUrl as string, { method: "HEAD", redirect: "manual" });
+            const loc = res.headers.get("location") || "";
+            const match = loc.match(/\/video\/(\d+)/);
+            if (match) {
+              newItem.videoId = match[1];
+              newItem.embedUrl = `https://www.tiktok.com/player/v1/${match[1]}?autoplay=1`;
+              newItem.canonicalUrl = loc.split("?")[0];
+            }
+          } catch {
+            /* ignore */
+          }
+        }
+      }
+
       data.push(newItem);
       await writeData(collection, data);
       return NextResponse.json({ ok: true, item: newItem });
@@ -61,7 +84,32 @@ export async function POST(
       const data = await readData<Record<string, unknown>[]>(collection, []);
       const index = data.findIndex((i) => i.id === id);
       if (index === -1) return NextResponse.json({ error: "Not found" }, { status: 404 });
-      data[index] = { ...data[index], ...item };
+
+      const updatedItem = { ...data[index], ...item };
+
+      // Auto-resolve videoId if videoUrl changed
+      if (collection === "selected-cuts" && typeof updatedItem.videoUrl === "string") {
+        const directMatch = (updatedItem.videoUrl as string).match(/\/video\/(\d+)/);
+        if (directMatch) {
+          updatedItem.videoId = directMatch[1];
+          updatedItem.embedUrl = `https://www.tiktok.com/player/v1/${directMatch[1]}?autoplay=1`;
+        } else if ((updatedItem.videoUrl as string).includes("tiktok.com")) {
+          try {
+            const res = await fetch(updatedItem.videoUrl as string, { method: "HEAD", redirect: "manual" });
+            const loc = res.headers.get("location") || "";
+            const match = loc.match(/\/video\/(\d+)/);
+            if (match) {
+              updatedItem.videoId = match[1];
+              updatedItem.embedUrl = `https://www.tiktok.com/player/v1/${match[1]}?autoplay=1`;
+              updatedItem.canonicalUrl = loc.split("?")[0];
+            }
+          } catch {
+            /* ignore */
+          }
+        }
+      }
+
+      data[index] = updatedItem;
       await writeData(collection, data);
       return NextResponse.json({ ok: true, item: data[index] });
     }

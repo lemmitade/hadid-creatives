@@ -156,6 +156,9 @@ export type SelectedCut = {
   type: "video" | "image";
   thumbnailUrl?: string;
   videoUrl?: string;
+  videoId?: string;
+  embedUrl?: string;
+  canonicalUrl?: string;
   linkUrl?: string;
   description?: string;
   order?: number;
