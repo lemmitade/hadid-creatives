@@ -30,17 +30,32 @@ let pgInitialized = false;
 
 export function getPostgresUrl(): string | null {
   return (
+    process.env.NEON_URL ||
+    process.env.NEON_DATABASE_URL ||
     process.env.POSTGRES_URL ||
+    process.env.DATABASE_URL ||
     process.env.POSTGRES_DATABASE_URL ||
     process.env.POSTGRES_PRISMA_DATABASE_URL ||
-    process.env.DATABASE_URL ||
     process.env.POSTGRES_PRISMA_URL ||
     process.env.POSTGRES_URL_NON_POOLING ||
+    process.env.NEON_URL_NON_POOLING ||
     null
   );
 }
 
-function getPgPool(): Pool | null {
+export async function resetPgPool(): Promise<void> {
+  if (globalThis._hadidPgPool) {
+    try {
+      await globalThis._hadidPgPool.end();
+    } catch {
+      /* ignore */
+    }
+    globalThis._hadidPgPool = undefined;
+  }
+  pgInitialized = false;
+}
+
+export function getPgPool(): Pool | null {
   const url = getPostgresUrl();
   if (!url) return null;
 
@@ -68,6 +83,52 @@ function getPgPool(): Pool | null {
   return globalThis._hadidPgPool;
 }
 
+export async function connectAndMigratePg(connectionString: string): Promise<{
+  success: boolean;
+  seededCount: number;
+  message: string;
+}> {
+  const isNeon = connectionString.includes("neon.tech");
+  const testPool = new Pool({
+    connectionString,
+    ssl: { rejectUnauthorized: false },
+    connectionTimeoutMillis: 10000,
+  });
+
+  try {
+    await testPool.query("SELECT 1");
+    // Ensure tables exist on target database
+    await ensurePgTables(testPool);
+    // Seed target database if empty
+    const seededCount = await seedPgFromJson(testPool);
+    await testPool.end();
+
+    // Reset active pool and update environment in current process
+    await resetPgPool();
+    process.env.NEON_DATABASE_URL = connectionString;
+    process.env.POSTGRES_URL = connectionString;
+    process.env.DATABASE_URL = connectionString;
+
+    // Warm up new pool
+    getPgPool();
+
+    return {
+      success: true,
+      seededCount,
+      message: isNeon
+        ? `Successfully connected to Neon Serverless Postgres! Tables verified and ${seededCount} records synchronized.`
+        : `Successfully connected to PostgreSQL! Tables verified and ${seededCount} records synchronized.`,
+    };
+  } catch (err) {
+    try {
+      await testPool.end();
+    } catch {
+      /* ignore */
+    }
+    throw err;
+  }
+}
+
 async function ensureDir() {
   try {
     await mkdir(DATA_DIR, { recursive: true });
@@ -83,7 +144,7 @@ function filePath(name: string): string {
 /**
  * Initializes and auto-seeds Postgres on Vercel or cloud environments.
  */
-async function ensurePgTables(pool: Pool): Promise<void> {
+export async function ensurePgTables(pool: Pool): Promise<void> {
   if (pgInitialized) return;
   try {
     await pool.query(`
@@ -687,10 +748,23 @@ export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+function maskConnectionHost(url: string): string {
+  try {
+    const parsed = new URL(url);
+    const host = parsed.host;
+    const db = parsed.pathname.replace(/^\//, "");
+    return `${host}${db ? `/${db}` : ""}`;
+  } catch {
+    return "";
+  }
+}
+
 export async function getDatabaseStatus(): Promise<{
   connected: boolean;
   engine: string;
   isServerless: boolean;
+  isNeon: boolean;
+  endpoint?: string;
   hasPostgresConfigured: boolean;
   tables: { name: string; count: number }[];
 }> {
@@ -727,10 +801,11 @@ export async function getDatabaseStatus(): Promise<{
       ];
 
       const url = getPostgresUrl() || "";
-      const engineLabel = url.includes("prisma.io")
+      const isNeon = url.includes("neon.tech") || url.includes("neon");
+      const engineLabel = isNeon
+        ? "Neon Serverless Postgres"
+        : url.includes("prisma.io")
         ? "Prisma Postgres (Cloud)"
-        : url.includes("neon.tech")
-        ? "Neon / Vercel Postgres"
         : url.includes("supabase.co")
         ? "Supabase Postgres"
         : "PostgreSQL (Cloud)";
@@ -739,6 +814,8 @@ export async function getDatabaseStatus(): Promise<{
         connected: true,
         engine: engineLabel,
         isServerless: true,
+        isNeon,
+        endpoint: maskConnectionHost(url),
         hasPostgresConfigured: true,
         tables,
       };
@@ -753,6 +830,7 @@ export async function getDatabaseStatus(): Promise<{
       connected: false,
       engine: "JSON Fallback",
       isServerless: false,
+      isNeon: false,
       hasPostgresConfigured: hasPg,
       tables: [],
     };
@@ -788,6 +866,7 @@ export async function getDatabaseStatus(): Promise<{
       connected: true,
       engine: "SQLite 3 (node:sqlite)",
       isServerless: false,
+      isNeon: false,
       hasPostgresConfigured: hasPg,
       tables,
     };
@@ -796,6 +875,7 @@ export async function getDatabaseStatus(): Promise<{
       connected: false,
       engine: "Error",
       isServerless: false,
+      isNeon: false,
       hasPostgresConfigured: hasPg,
       tables: [],
     };
