@@ -1,4 +1,5 @@
 /* CMS data types used across the application */
+export type { CaseStudy } from "@/content/site";
 
 export type Testimonial = {
   id: string;

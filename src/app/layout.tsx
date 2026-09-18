@@ -52,6 +52,9 @@ export const metadata: Metadata = {
     shortcut: "/favicon.svg",
     apple: "/favicon.svg",
   },
+  verification: {
+    google: "google2515097d3b8099c5",
+  },
 };
 
 const themeScript = `

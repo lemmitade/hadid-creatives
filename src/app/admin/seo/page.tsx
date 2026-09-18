@@ -60,6 +60,29 @@ export default function AdminSeoPage() {
         </button>
       </div>
       <p className="admin-description">Manage meta titles, descriptions, OG images, and keywords per page.</p>
+
+      {/* Sitemap & Robots.txt quick access */}
+      <div className="admin-card" style={{ marginBottom: "1.5rem", border: "1px solid rgba(0, 174, 240, 0.3)" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
+          <div>
+            <h2 style={{ margin: 0, fontSize: "1.05rem", color: "var(--cyan, #00AEF0)" }}>XML Sitemap & Crawlers</h2>
+            <p style={{ margin: "0.25rem 0 0 0", fontSize: "0.8rem", opacity: 0.8 }}>
+              Automatically indexes all public marketing pages, portfolio case studies, and published insight articles.
+            </p>
+          </div>
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+            <a href="/sitemap.xml" target="_blank" rel="noreferrer" className="admin-btn admin-btn-secondary" style={{ fontSize: "0.8rem", textDecoration: "none" }}>
+              View /sitemap.xml ↗
+            </a>
+            <a href="/robots.txt" target="_blank" rel="noreferrer" className="admin-btn admin-btn-secondary" style={{ fontSize: "0.8rem", textDecoration: "none" }}>
+              View /robots.txt ↗
+            </a>
+            <a href="/google2515097d3b8099c5.html" target="_blank" rel="noreferrer" className="admin-btn admin-btn-secondary" style={{ fontSize: "0.8rem", textDecoration: "none" }}>
+              Google Verification ↗
+            </a>
+          </div>
+        </div>
+      </div>
       {PAGES.map((page) => {
         const data = seo[page.id] || { title: "", description: "", ogImage: "", keywords: "" };
         return (

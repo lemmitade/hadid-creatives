@@ -22,7 +22,6 @@ let sqliteDb: SqliteDatabase | null = null;
 let sqliteInitialized = false;
 
 declare global {
-  // eslint-disable-next-line no-var
   var _hadidPgPool: Pool | undefined;
 }
 
@@ -290,7 +289,6 @@ function getDb(): SqliteDatabase | null {
 
   try {
     // Dynamic require so bundlers (Webpack / Turbopack / Vercel) don't trace node:sqlite at build time
-    // eslint-disable-next-line @typescript-eslint/no-implied-eval
     const dynamicRequire = eval("require");
     const { DatabaseSync } = dynamicRequire("node:sqlite");
     if (!DatabaseSync) return null;
@@ -438,7 +436,7 @@ export async function readData<T>(name: string, fallback: T): Promise<T> {
           [name],
         );
         if (res.rows.length > 0) {
-          return res.rows.map((r) => JSON.parse(r.data)) as unknown as T;
+          return res.rows.map((r: { data: string }) => JSON.parse(r.data)) as unknown as T;
         }
       }
     } catch (pgErr) {
@@ -794,7 +792,7 @@ export async function getDatabaseStatus(): Promise<{
           name: "settings",
           count: parseInt(settingsCountRes.rows[0]?.count || "0", 10),
         },
-        ...collectionsRows.rows.map((r) => ({
+        ...collectionsRows.rows.map((r: { collection: string; count: string }) => ({
           name: `collection: ${r.collection}`,
           count: parseInt(r.count, 10),
         })),
